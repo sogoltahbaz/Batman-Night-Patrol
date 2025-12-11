@@ -56,7 +56,9 @@ public class BatmanMovement : MonoBehaviour
 
         // حرکت فقط در محور X و Z
         Vector3 movement = new Vector3(moveRight, 0, moveForward) * currentSpeed * Time.deltaTime;
-        rb.velocity = new Vector3(movement.x, rb.velocity.y, movement.z); // حفظ وضعیت عمودی (Y) با استفاده از rb.velocity
+
+        // حرکت با استفاده از MovePosition به جای velocity
+        rb.MovePosition(transform.position + movement);  // حرکت در محور X و Z فقط، بدون تغییر در محور Y
 
         // مدیریت نور هشدار و صدای آلارم در حالت Alert
         if (currentState == BatmanState.Alert)
