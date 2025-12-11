@@ -188,6 +188,10 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: -7511558181221131132, guid: 2acc8bf27e0625d41b875576e6e20012, type: 3}
+      propertyPath: m_CastShadows
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: -7511558181221131132, guid: 2acc8bf27e0625d41b875576e6e20012, type: 3}
       propertyPath: m_Materials.Array.size
       value: 1
       objectReference: {fileID: 0}
@@ -238,6 +242,14 @@ MonoBehaviour:
   currentState: 0
   speed: 5
   boostSpeed: 10
+  alertLight: {fileID: 725310163}
+  alarmSound: {fileID: 963194229}
+  flashSpeed: 1
+--- !u!4 &533233524 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 2acc8bf27e0625d41b875576e6e20012, type: 3}
+  m_PrefabInstance: {fileID: 19671960}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &705507993
 GameObject:
   m_ObjectHideFlags: 0
@@ -360,7 +372,7 @@ Light:
   serializedVersion: 10
   m_Type: 2
   m_Shape: 0
-  m_Color: {r: 0.8113208, g: 0.18752226, b: 0.18752226, a: 1}
+  m_Color: {r: 0.9150943, g: 0.22877358, b: 0.22877358, a: 1}
   m_Intensity: 5
   m_Range: 10
   m_SpotAngle: 30
@@ -457,9 +469,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   batman: {fileID: 533233515}
   batmobile: {fileID: 1601963299}
-  batSignal: {fileID: 0}
-  alertLight: {fileID: 0}
-  alarmSound: {fileID: 0}
 --- !u!4 &868939304
 Transform:
   m_ObjectHideFlags: 0
@@ -558,6 +567,7 @@ GameObject:
   - component: {fileID: 963194227}
   - component: {fileID: 963194230}
   - component: {fileID: 963194229}
+  - component: {fileID: 963194231}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -727,6 +737,22 @@ AudioListener:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 963194225}
   m_Enabled: 1
+--- !u!114 &963194231
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 963194225}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 939c977ae0ddee64a979cd9998715b1b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  batman: {fileID: 533233524}
+  batmobile: {fileID: 1601963300}
+  offset: {x: -10, y: 5, z: 0}
+  smoothSpeed: 0.125
 --- !u!1 &1145754730
 GameObject:
   m_ObjectHideFlags: 0
@@ -830,6 +856,11 @@ GameObject:
   m_CorrespondingSourceObject: {fileID: 919132149155446097, guid: 0070b1f2cea67124aa00df17656d383a, type: 3}
   m_PrefabInstance: {fileID: 912514553}
   m_PrefabAsset: {fileID: 0}
+--- !u!4 &1601963300 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 0070b1f2cea67124aa00df17656d383a, type: 3}
+  m_PrefabInstance: {fileID: 912514553}
+  m_PrefabAsset: {fileID: 0}
 --- !u!114 &1601963301
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -842,5 +873,68 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 71e95a1a36e32db41b5e59f36694ffb9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  speed: 15
+  normalSpeed: 15
+  alertSpeed: 25
   turnSpeed: 60
+  alertLight: {fileID: 725310163}
+  alarmSound: {fileID: 963194229}
+  flashSpeed: 1
+--- !u!1001 &1763558537
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 2
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: -8679921383154817045, guid: 5d5fc65ecc2ee2148b517c1d95a5c708, type: 3}
+      propertyPath: m_RootOrder
+      value: 7
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 5d5fc65ecc2ee2148b517c1d95a5c708, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 5d5fc65ecc2ee2148b517c1d95a5c708, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 5d5fc65ecc2ee2148b517c1d95a5c708, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 5d5fc65ecc2ee2148b517c1d95a5c708, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 5d5fc65ecc2ee2148b517c1d95a5c708, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 5d5fc65ecc2ee2148b517c1d95a5c708, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 5d5fc65ecc2ee2148b517c1d95a5c708, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 5d5fc65ecc2ee2148b517c1d95a5c708, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 5d5fc65ecc2ee2148b517c1d95a5c708, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 5d5fc65ecc2ee2148b517c1d95a5c708, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 5d5fc65ecc2ee2148b517c1d95a5c708, type: 3}
+      propertyPath: m_Name
+      value: Castelia City
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_AddedGameObjects: []
+  m_SourcePrefab: {fileID: 100100000, guid: 5d5fc65ecc2ee2148b517c1d95a5c708, type: 3}

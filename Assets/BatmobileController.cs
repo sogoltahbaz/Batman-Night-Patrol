@@ -3,33 +3,28 @@ using System.Collections;
 
 public class BatmobileController : MonoBehaviour
 {
-    public float speed = 15f;
+    public float normalSpeed = 15f;
+    public float boostSpeed = 50f;
     public float turnSpeed = 60f;
+
+    private float currentSpeed;
 
     public Light alertLight;
     public AudioSource alarmSound;
     public float flashSpeed = 1f;
     private bool isFlashing = false;
 
-    private enum BatmobileState
-    {
-        Normal,
-        Alert
-    }
-
-    private BatmobileState currentState = BatmobileState.Normal;
-
     void Update()
     {
-        HandleState();
+        currentSpeed = (Input.GetKey(KeyCode.LeftShift)) ? boostSpeed : normalSpeed;
 
-        float move = Input.GetAxis("Vertical") * speed * Time.deltaTime;
+        float move = Input.GetAxis("Vertical") * currentSpeed * Time.deltaTime;
         float turn = Input.GetAxis("Horizontal") * turnSpeed * Time.deltaTime;
 
         transform.Translate(Vector3.forward * move);
         transform.Rotate(Vector3.up * turn);
 
-        if (currentState == BatmobileState.Alert)
+        if (Input.GetKey(KeyCode.LeftShift))
         {
             if (!isFlashing)
             {
@@ -57,23 +52,11 @@ public class BatmobileController : MonoBehaviour
         }
     }
 
-    void HandleState()
-    {
-        if (Input.GetKeyDown(KeyCode.Space))
-        {
-            currentState = BatmobileState.Alert;
-        }
-        else if (Input.GetKeyDown(KeyCode.N))
-        {
-            currentState = BatmobileState.Normal;
-        }
-    }
-
     IEnumerator FlashLight()
     {
         isFlashing = true;
 
-        while (currentState == BatmobileState.Alert)
+        while (Input.GetKey(KeyCode.LeftShift))
         {
             if (alertLight != null)
             {

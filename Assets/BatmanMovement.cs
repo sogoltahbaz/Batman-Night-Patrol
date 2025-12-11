@@ -6,14 +6,14 @@ public class BatmanMovement : MonoBehaviour
     public enum BatmanState
     {
         Normal,
-        Stealth,
-        Alert
+        Stealth
     }
 
     public BatmanState currentState = BatmanState.Normal;
 
-    public float speed = 5f;
-    public float boostSpeed = 10f;
+    public float normalSpeed = 5f;
+    public float boostSpeed = 20f;
+    private float currentSpeed;
     private Rigidbody rb;
 
     public Light alertLight;
@@ -45,17 +45,27 @@ public class BatmanMovement : MonoBehaviour
         float moveForward = Input.GetAxis("Vertical");
         float moveRight = Input.GetAxis("Horizontal");
 
-        float currentSpeed = speed;
-        if (Input.GetKey(KeyCode.LeftShift))
-        {
-            currentSpeed = boostSpeed;
-        }
+        currentSpeed = (Input.GetKey(KeyCode.LeftShift)) ? boostSpeed : normalSpeed;
 
         Vector3 movement = new Vector3(moveRight, 0, moveForward) * currentSpeed * Time.deltaTime;
 
         rb.MovePosition(transform.position + movement);
 
-        if (currentState == BatmanState.Alert)
+        if (movement.magnitude > 0)
+        {
+            if (moveForward > 0)
+            {
+                Quaternion toRotation = Quaternion.LookRotation(movement.normalized, Vector3.up);
+                transform.rotation = Quaternion.Slerp(transform.rotation, toRotation, Time.deltaTime * 10f);
+            }
+            else if (moveForward < 0)
+            {
+                Quaternion toRotation = Quaternion.LookRotation(-movement.normalized, Vector3.up);
+                transform.rotation = Quaternion.Slerp(transform.rotation, toRotation, Time.deltaTime * 10f);
+            }
+        }
+
+        if (currentState == BatmanState.Stealth)
         {
             if (!isFlashing)
             {
@@ -89,26 +99,9 @@ public class BatmanMovement : MonoBehaviour
         {
             currentState = BatmanState.Stealth;
         }
-        else if (Input.GetKeyDown(KeyCode.Space))
-        {
-            currentState = BatmanState.Alert;
-        }
         else if (Input.GetKeyDown(KeyCode.N))
         {
             currentState = BatmanState.Normal;
-        }
-
-        switch (currentState)
-        {
-            case BatmanState.Normal:
-                speed = 5f;
-                break;
-            case BatmanState.Stealth:
-                speed = 3f;
-                break;
-            case BatmanState.Alert:
-                speed = 7f;
-                break;
         }
     }
 
@@ -116,7 +109,7 @@ public class BatmanMovement : MonoBehaviour
     {
         isFlashing = true;
 
-        while (currentState == BatmanState.Alert)
+        while (currentState == BatmanState.Stealth)
         {
             if (alertLight != null)
             {
