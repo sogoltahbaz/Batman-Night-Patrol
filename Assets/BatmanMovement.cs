@@ -16,16 +16,15 @@ public class BatmanMovement : MonoBehaviour
     public float boostSpeed = 10f;
     private Rigidbody rb;
 
-    public Light alertLight;  // نور هشدار
-    public AudioSource alarmSound;  // صدای آلارم
-    public float flashSpeed = 1f;  // سرعت چشمک‌زن نور
-    private bool isFlashing = false;  // وضعیت نور چشمک‌زن
+    public Light alertLight;
+    public AudioSource alarmSound;
+    public float flashSpeed = 1f;
+    private bool isFlashing = false;
 
     void Start()
     {
         rb = GetComponent<Rigidbody>();
 
-        // خاموش کردن نور و آلارم در ابتدا
         if (alertLight != null)
         {
             alertLight.enabled = false;
@@ -36,7 +35,6 @@ public class BatmanMovement : MonoBehaviour
             alarmSound.Stop();
         }
 
-        // محدود کردن حرکت در محور Y
         rb.constraints = RigidbodyConstraints.FreezePositionY | RigidbodyConstraints.FreezeRotationX | RigidbodyConstraints.FreezeRotationZ;
     }
 
@@ -44,46 +42,41 @@ public class BatmanMovement : MonoBehaviour
     {
         HandleState();
 
-        // گرفتن ورودی حرکت از کیبورد
         float moveForward = Input.GetAxis("Vertical");
         float moveRight = Input.GetAxis("Horizontal");
 
         float currentSpeed = speed;
-        if (Input.GetKey(KeyCode.LeftShift))  // حالت دویدن با Shift
+        if (Input.GetKey(KeyCode.LeftShift))
         {
             currentSpeed = boostSpeed;
         }
 
-        // حرکت فقط در محور X و Z
         Vector3 movement = new Vector3(moveRight, 0, moveForward) * currentSpeed * Time.deltaTime;
 
-        // حرکت با استفاده از MovePosition به جای velocity
-        rb.MovePosition(transform.position + movement);  // حرکت در محور X و Z فقط، بدون تغییر در محور Y
+        rb.MovePosition(transform.position + movement);
 
-        // مدیریت نور هشدار و صدای آلارم در حالت Alert
         if (currentState == BatmanState.Alert)
         {
             if (!isFlashing)
             {
-                StartCoroutine(FlashLight());  // شروع چشمک‌زن نور
+                StartCoroutine(FlashLight());
             }
 
             if (!alarmSound.isPlaying)
             {
-                alarmSound.Play();  // پخش صدای آلارم
+                alarmSound.Play();
             }
         }
         else
         {
-            // خاموش کردن نور و صدای آلارم زمانی که از حالت Alert خارج می‌شویم
             if (alertLight != null)
             {
-                alertLight.enabled = false;  // خاموش کردن نور
+                alertLight.enabled = false;
             }
 
             if (alarmSound.isPlaying)
             {
-                alarmSound.Stop();  // متوقف کردن صدای آلارم
+                alarmSound.Stop();
             }
 
             isFlashing = false;
@@ -92,7 +85,6 @@ public class BatmanMovement : MonoBehaviour
 
     void HandleState()
     {
-        // تغییر حالت‌ها با استفاده از کلیدها
         if (Input.GetKeyDown(KeyCode.C))
         {
             currentState = BatmanState.Stealth;
@@ -101,12 +93,11 @@ public class BatmanMovement : MonoBehaviour
         {
             currentState = BatmanState.Alert;
         }
-        else if (Input.GetKeyDown(KeyCode.N))  // برای بازگشت به حالت عادی
+        else if (Input.GetKeyDown(KeyCode.N))
         {
             currentState = BatmanState.Normal;
         }
 
-        // تغییر سرعت بر اساس حالت
         switch (currentState)
         {
             case BatmanState.Normal:
@@ -121,7 +112,6 @@ public class BatmanMovement : MonoBehaviour
         }
     }
 
-    // متد برای چشمک‌زدن نور در حالت Alert
     IEnumerator FlashLight()
     {
         isFlashing = true;
@@ -130,10 +120,10 @@ public class BatmanMovement : MonoBehaviour
         {
             if (alertLight != null)
             {
-                alertLight.enabled = !alertLight.enabled;  // روشن و خاموش کردن نور
+                alertLight.enabled = !alertLight.enabled;
             }
 
-            yield return new WaitForSeconds(flashSpeed);  // مدت زمان چشمک‌زدن
+            yield return new WaitForSeconds(flashSpeed);
         }
     }
 }

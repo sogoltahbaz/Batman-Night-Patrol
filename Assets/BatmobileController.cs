@@ -3,13 +3,13 @@ using System.Collections;
 
 public class BatmobileController : MonoBehaviour
 {
-    public float speed = 15f; // سرعت حرکت
-    public float turnSpeed = 60f; // سرعت چرخش
+    public float speed = 15f;
+    public float turnSpeed = 60f;
 
-    public Light alertLight;  // نور هشدار
-    public AudioSource alarmSound;  // صدای آلارم
-    public float flashSpeed = 1f;  // سرعت چشمک‌زن نور
-    private bool isFlashing = false;  // وضعیت نور چشمک‌زن
+    public Light alertLight;
+    public AudioSource alarmSound;
+    public float flashSpeed = 1f;
+    private bool isFlashing = false;
 
     private enum BatmobileState
     {
@@ -23,39 +23,34 @@ public class BatmobileController : MonoBehaviour
     {
         HandleState();
 
-        // حرکت به جلو و عقب
         float move = Input.GetAxis("Vertical") * speed * Time.deltaTime;
-        // چرخش به چپ و راست
         float turn = Input.GetAxis("Horizontal") * turnSpeed * Time.deltaTime;
 
-        // حرکت بت‌موبیل
         transform.Translate(Vector3.forward * move);
         transform.Rotate(Vector3.up * turn);
 
-        // مدیریت نور هشدار و صدای آلارم در حالت Alert
         if (currentState == BatmobileState.Alert)
         {
             if (!isFlashing)
             {
-                StartCoroutine(FlashLight());  // شروع چشمک‌زن نور
+                StartCoroutine(FlashLight());
             }
 
             if (!alarmSound.isPlaying)
             {
-                alarmSound.Play();  // پخش صدای آلارم
+                alarmSound.Play();
             }
         }
         else
         {
-            // خاموش کردن نور و صدای آلارم زمانی که از حالت Alert خارج می‌شویم
             if (alertLight != null)
             {
-                alertLight.enabled = false;  // خاموش کردن نور
+                alertLight.enabled = false;
             }
 
             if (alarmSound.isPlaying)
             {
-                alarmSound.Stop();  // متوقف کردن صدای آلارم
+                alarmSound.Stop();
             }
 
             isFlashing = false;
@@ -64,18 +59,16 @@ public class BatmobileController : MonoBehaviour
 
     void HandleState()
     {
-        // تغییر حالت‌ها با استفاده از کلیدها
-        if (Input.GetKeyDown(KeyCode.Space))  // حالت Alert
+        if (Input.GetKeyDown(KeyCode.Space))
         {
             currentState = BatmobileState.Alert;
         }
-        else if (Input.GetKeyDown(KeyCode.N))  // برگشت به حالت Normal
+        else if (Input.GetKeyDown(KeyCode.N))
         {
             currentState = BatmobileState.Normal;
         }
     }
 
-    // متد برای چشمک‌زدن نور در حالت Alert
     IEnumerator FlashLight()
     {
         isFlashing = true;
@@ -84,10 +77,10 @@ public class BatmobileController : MonoBehaviour
         {
             if (alertLight != null)
             {
-                alertLight.enabled = !alertLight.enabled;  // روشن و خاموش کردن نور
+                alertLight.enabled = !alertLight.enabled;
             }
 
-            yield return new WaitForSeconds(flashSpeed);  // مدت زمان چشمک‌زدن
+            yield return new WaitForSeconds(flashSpeed);
         }
     }
 }

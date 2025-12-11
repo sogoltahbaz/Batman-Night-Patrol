@@ -2,14 +2,13 @@
 
 public class StateSwitcher : MonoBehaviour
 {
-    public GameObject batman; // ارجاع به شیء بتمن
-    public GameObject batmobile; // ارجاع به شیء بت‌موبیل
+    public GameObject batman;
+    public GameObject batmobile;
 
     private bool isInBatmobile = false;
 
     void Update()
     {
-        // اگر کلید B فشرده بشه، وضعیت تغییر کنه
         if (Input.GetKeyDown(KeyCode.B))
         {
             isInBatmobile = !isInBatmobile;
@@ -21,13 +20,11 @@ public class StateSwitcher : MonoBehaviour
     {
         if (isInBatmobile)
         {
-            // بت‌موبیل فعال بشه و بتمن غیرفعال بشه
             batman.SetActive(false);
             batmobile.SetActive(true);
         }
         else
         {
-            // بتمن فعال بشه و بت‌موبیل غیرفعال بشه
             batman.SetActive(true);
             batmobile.SetActive(false);
         }
