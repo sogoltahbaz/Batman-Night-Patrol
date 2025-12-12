@@ -9,7 +9,7 @@ public class StateSwitcher : MonoBehaviour
 
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.B))
+        if (Input.GetKeyDown(KeyCode.Q))
         {
             isInBatmobile = !isInBatmobile;
             SwitchState();

@@ -9,9 +9,10 @@ public class BatmobileController : MonoBehaviour
 
     private float currentSpeed;
 
-    public Light alertLight;
-    public AudioSource alarmSound;
-    public float flashSpeed = 1f;
+    public Light environmentLight; 
+    public AudioSource alarmSound; 
+    public float flashSpeed = 1f;  
+
     private bool isFlashing = false;
 
     void Update()
@@ -35,17 +36,22 @@ public class BatmobileController : MonoBehaviour
             {
                 alarmSound.Play();
             }
+
+            if (environmentLight != null)
+            {
+                environmentLight.intensity = 2f; 
+            }
         }
         else
         {
-            if (alertLight != null)
-            {
-                alertLight.enabled = false;
-            }
-
             if (alarmSound.isPlaying)
             {
                 alarmSound.Stop();
+            }
+
+            if (environmentLight != null)
+            {
+                environmentLight.intensity = 1f; 
             }
 
             isFlashing = false;
@@ -58,9 +64,9 @@ public class BatmobileController : MonoBehaviour
 
         while (Input.GetKey(KeyCode.LeftShift))
         {
-            if (alertLight != null)
+            if (environmentLight != null)
             {
-                alertLight.enabled = !alertLight.enabled;
+                environmentLight.enabled = !environmentLight.enabled;
             }
 
             yield return new WaitForSeconds(flashSpeed);

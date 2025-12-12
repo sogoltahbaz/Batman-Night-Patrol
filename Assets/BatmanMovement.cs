@@ -6,7 +6,8 @@ public class BatmanMovement : MonoBehaviour
     public enum BatmanState
     {
         Normal,
-        Stealth
+        Stealth,
+        Alert
     }
 
     public BatmanState currentState = BatmanState.Normal;
@@ -16,7 +17,7 @@ public class BatmanMovement : MonoBehaviour
     private float currentSpeed;
     private Rigidbody rb;
 
-    public Light alertLight;
+    public Light environmentLight; 
     public AudioSource alarmSound;
     public float flashSpeed = 1f;
     private bool isFlashing = false;
@@ -25,17 +26,17 @@ public class BatmanMovement : MonoBehaviour
     {
         rb = GetComponent<Rigidbody>();
 
-        if (alertLight != null)
-        {
-            alertLight.enabled = false;
-        }
-
         if (alarmSound != null)
         {
             alarmSound.Stop();
         }
 
         rb.constraints = RigidbodyConstraints.FreezePositionY | RigidbodyConstraints.FreezeRotationX | RigidbodyConstraints.FreezeRotationZ;
+
+        if (GetComponent<Light>())
+        {
+            Destroy(GetComponent<Light>());
+        }
     }
 
     void Update()
@@ -45,7 +46,14 @@ public class BatmanMovement : MonoBehaviour
         float moveForward = Input.GetAxis("Vertical");
         float moveRight = Input.GetAxis("Horizontal");
 
-        currentSpeed = (Input.GetKey(KeyCode.LeftShift)) ? boostSpeed : normalSpeed;
+        if (currentState == BatmanState.Alert)
+        {
+            currentSpeed = boostSpeed;  
+        }
+        else
+        {
+            currentSpeed = (Input.GetKey(KeyCode.LeftShift)) ? boostSpeed : normalSpeed;
+        }
 
         Vector3 movement = new Vector3(moveRight, 0, moveForward) * currentSpeed * Time.deltaTime;
 
@@ -65,7 +73,7 @@ public class BatmanMovement : MonoBehaviour
             }
         }
 
-        if (currentState == BatmanState.Stealth)
+        if (currentState == BatmanState.Alert)
         {
             if (!isFlashing)
             {
@@ -76,30 +84,49 @@ public class BatmanMovement : MonoBehaviour
             {
                 alarmSound.Play();
             }
+
+            if (environmentLight != null)
+            {
+                environmentLight.intensity = 2f; 
+            }
         }
         else
         {
-            if (alertLight != null)
-            {
-                alertLight.enabled = false;
-            }
-
             if (alarmSound.isPlaying)
             {
                 alarmSound.Stop();
             }
 
             isFlashing = false;
+
+            if (environmentLight != null)
+            {
+                environmentLight.intensity = 1f; 
+            }
+        }
+
+        if (currentState == BatmanState.Stealth)
+        {
+            if (environmentLight != null)
+            {
+                environmentLight.intensity = 0.2f;  
+            }
+
+            currentSpeed = normalSpeed / 2;  
         }
     }
 
     void HandleState()
     {
-        if (Input.GetKeyDown(KeyCode.C))
+        if (Input.GetKeyDown(KeyCode.C)) 
         {
             currentState = BatmanState.Stealth;
         }
-        else if (Input.GetKeyDown(KeyCode.N))
+        else if (Input.GetKeyDown(KeyCode.Space)) 
+        {
+            currentState = BatmanState.Alert;
+        }
+        else if (Input.GetKeyDown(KeyCode.N)) 
         {
             currentState = BatmanState.Normal;
         }
@@ -109,11 +136,11 @@ public class BatmanMovement : MonoBehaviour
     {
         isFlashing = true;
 
-        while (currentState == BatmanState.Stealth)
+        while (currentState == BatmanState.Alert)
         {
-            if (alertLight != null)
+            if (environmentLight != null)
             {
-                alertLight.enabled = !alertLight.enabled;
+                environmentLight.enabled = !environmentLight.enabled;
             }
 
             yield return new WaitForSeconds(flashSpeed);
