@@ -4,14 +4,15 @@ public class CameraFollow : MonoBehaviour
 {
     public Transform batman;
     public Transform batmobile;
-    public Vector3 offset;
-    public float smoothSpeed = 0.125f;
+    public float smoothSpeed = 0.125f;  
+    public float distance = 8f;  
+    public float height = 3f;   
 
     private Transform target;
 
     void Start()
     {
-        target = batman;
+        target = batman; 
     }
 
     void Update()
@@ -24,14 +25,12 @@ public class CameraFollow : MonoBehaviour
                 target = batman;
         }
 
-        Vector3 desiredPosition = target.position + offset;
+        Vector3 desiredPosition = target.position - target.forward * distance + Vector3.up * height;
+
         Vector3 smoothedPosition = Vector3.Lerp(transform.position, desiredPosition, smoothSpeed);
         transform.position = smoothedPosition;
 
-        Vector3 direction = target.position - transform.position;
-        Quaternion rotation = Quaternion.LookRotation(direction);
-        transform.rotation = Quaternion.Slerp(transform.rotation, rotation, Time.deltaTime * smoothSpeed);
-
-        transform.position = target.position - transform.forward * offset.magnitude;
+        Quaternion targetRotation = Quaternion.LookRotation(target.position - transform.position);
+        transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, smoothSpeed);
     }
 }

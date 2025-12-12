@@ -8,12 +8,28 @@ public class BatmobileController : MonoBehaviour
     public float turnSpeed = 60f;
 
     private float currentSpeed;
+    private Rigidbody rb;
 
-    public Light environmentLight; 
-    public AudioSource alarmSound; 
-    public float flashSpeed = 1f;  
+    public Light environmentLight;
+    public AudioSource alarmSound;
+    public float flashSpeed = 1f;
 
     private bool isFlashing = false;
+
+    void Start()
+    {
+        rb = GetComponent<Rigidbody>(); 
+
+        if (rb == null)
+        {
+            rb = gameObject.AddComponent<Rigidbody>();
+            rb.useGravity = false;  
+        }
+        else
+        {
+            rb.useGravity = false;  
+        }
+    }
 
     void Update()
     {
@@ -22,8 +38,9 @@ public class BatmobileController : MonoBehaviour
         float move = Input.GetAxis("Vertical") * currentSpeed * Time.deltaTime;
         float turn = Input.GetAxis("Horizontal") * turnSpeed * Time.deltaTime;
 
-        transform.Translate(Vector3.forward * move);
-        transform.Rotate(Vector3.up * turn);
+        Vector3 moveDirection = transform.forward * move; 
+        rb.MovePosition(rb.position + moveDirection); 
+        rb.MoveRotation(rb.rotation * Quaternion.Euler(0, turn, 0)); 
 
         if (Input.GetKey(KeyCode.LeftShift))
         {
@@ -39,7 +56,7 @@ public class BatmobileController : MonoBehaviour
 
             if (environmentLight != null)
             {
-                environmentLight.intensity = 2f; 
+                environmentLight.intensity = 2f;
             }
         }
         else
@@ -51,7 +68,7 @@ public class BatmobileController : MonoBehaviour
 
             if (environmentLight != null)
             {
-                environmentLight.intensity = 1f; 
+                environmentLight.intensity = 1f;
             }
 
             isFlashing = false;

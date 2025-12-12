@@ -17,7 +17,7 @@ public class BatmanMovement : MonoBehaviour
     private float currentSpeed;
     private Rigidbody rb;
 
-    public Light environmentLight; 
+    public Light environmentLight;
     public AudioSource alarmSound;
     public float flashSpeed = 1f;
     private bool isFlashing = false;
@@ -48,7 +48,7 @@ public class BatmanMovement : MonoBehaviour
 
         if (currentState == BatmanState.Alert)
         {
-            currentSpeed = boostSpeed;  
+            currentSpeed = boostSpeed;
         }
         else
         {
@@ -61,16 +61,8 @@ public class BatmanMovement : MonoBehaviour
 
         if (movement.magnitude > 0)
         {
-            if (moveForward > 0)
-            {
-                Quaternion toRotation = Quaternion.LookRotation(movement.normalized, Vector3.up);
-                transform.rotation = Quaternion.Slerp(transform.rotation, toRotation, Time.deltaTime * 10f);
-            }
-            else if (moveForward < 0)
-            {
-                Quaternion toRotation = Quaternion.LookRotation(-movement.normalized, Vector3.up);
-                transform.rotation = Quaternion.Slerp(transform.rotation, toRotation, Time.deltaTime * 10f);
-            }
+            Quaternion toRotation = Quaternion.LookRotation(movement.normalized, Vector3.up);
+            rb.MoveRotation(Quaternion.Slerp(transform.rotation, toRotation, Time.deltaTime * 10f)); 
         }
 
         if (currentState == BatmanState.Alert)
@@ -87,7 +79,7 @@ public class BatmanMovement : MonoBehaviour
 
             if (environmentLight != null)
             {
-                environmentLight.intensity = 2f; 
+                environmentLight.intensity = 2f;
             }
         }
         else
@@ -101,7 +93,7 @@ public class BatmanMovement : MonoBehaviour
 
             if (environmentLight != null)
             {
-                environmentLight.intensity = 1f; 
+                environmentLight.intensity = 1f;
             }
         }
 
@@ -109,24 +101,24 @@ public class BatmanMovement : MonoBehaviour
         {
             if (environmentLight != null)
             {
-                environmentLight.intensity = 0.2f;  
+                environmentLight.intensity = 0.2f;
             }
 
-            currentSpeed = normalSpeed / 2;  
+            currentSpeed = normalSpeed / 2;
         }
     }
 
     void HandleState()
     {
-        if (Input.GetKeyDown(KeyCode.C)) 
+        if (Input.GetKeyDown(KeyCode.C))
         {
             currentState = BatmanState.Stealth;
         }
-        else if (Input.GetKeyDown(KeyCode.Space)) 
+        else if (Input.GetKeyDown(KeyCode.Space))
         {
             currentState = BatmanState.Alert;
         }
-        else if (Input.GetKeyDown(KeyCode.N)) 
+        else if (Input.GetKeyDown(KeyCode.N))
         {
             currentState = BatmanState.Normal;
         }
