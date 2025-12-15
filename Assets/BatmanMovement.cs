@@ -14,6 +14,8 @@ public class BatmanMovement : MonoBehaviour
 
     public float normalSpeed = 5f;
     public float boostSpeed = 20f;
+    public float rotationSpeed = 200f; // سرعت چرخش جدید
+
     private float currentSpeed;
     private Rigidbody rb;
 
@@ -27,12 +29,14 @@ public class BatmanMovement : MonoBehaviour
     private Color alertLightColor1 = Color.red;
     private Color alertLightColor2 = Color.blue;
 
-    private bool isAlertFlashing = false;
+    // متغیر حذف شده که اکنون برای رفع خطا اضافه می‌شود
+    private bool isAlertFlashing = false; // <--- این خط اضافه شد/تایید شد
+
+    private float moveForward;
+    private float moveRotate;
 
     /// <summary>
     /// این متد برای تنظیمات اولیه در ابتدای بازی استفاده می‌شود.
-    /// - اتصال به Rigidbody برای فیزیک و حرکت.
-    /// - تنظیمات اولیه نور و صدای آلارم.
     /// </summary>
     void Start()
     {
@@ -52,43 +56,49 @@ public class BatmanMovement : MonoBehaviour
     }
 
     /// <summary>
-    /// در این متد، حرکت و چرخش بتمن مدیریت می‌شود.
-    /// همچنین، نور و صدای آلارم طبق حالت‌های مختلف تغییر می‌کند.
+    /// گرفتن ورودی‌ها و مدیریت حالت
     /// </summary>
     void Update()
     {
-        HandleState();  // مدیریت تغییر وضعیت بتمن (Normal, Stealth, Alert)
+        HandleState(); // مدیریت تغییر وضعیت بتمن (Normal, Stealth, Alert)
+        ManageLightingAndSound(); // مدیریت نور و صدا
 
-        float moveForward = Input.GetAxis("Vertical");
-        float moveRight = Input.GetAxis("Horizontal");
+        // گرفتن ورودی‌های حرکت و چرخش
+        moveForward = Input.GetAxis("Vertical"); // جلو/عقب (W/S یا فلش بالا/پایین)
+        moveRotate = Input.GetAxis("Horizontal"); // چرخش چپ/راست (A/D یا فلش چپ/راست)
+    }
 
+    /// <summary>
+    /// اعمال فیزیک و حرکت (در FixedUpdate برای هماهنگی با Rigidbody)
+    /// </summary>
+    void FixedUpdate()
+    {
+        // 1. تنظیم سرعت بر اساس حالت
         if (currentState == BatmanState.Alert)
         {
             currentSpeed = boostSpeed;
         }
-        else
+        else if (currentState == BatmanState.Stealth)
+        {
+            currentSpeed = normalSpeed / 2;
+        }
+        else // Normal
         {
             currentSpeed = (Input.GetKey(KeyCode.LeftShift)) ? boostSpeed : normalSpeed;
         }
 
-        Vector3 movement = new Vector3(moveRight, 0, moveForward) * currentSpeed * Time.deltaTime;
+        // 2. اعمال چرخش (استفاده از Horizontal Input)
+        float rotationAmount = moveRotate * rotationSpeed * Time.fixedDeltaTime;
+        Quaternion turnRotation = Quaternion.Euler(0f, rotationAmount, 0f);
+        rb.MoveRotation(rb.rotation * turnRotation);
 
-        rb.MovePosition(transform.position + movement);
-
-        if (movement.magnitude > 0)
-        {
-            Quaternion toRotation = Quaternion.LookRotation(movement.normalized, Vector3.up);
-            rb.MoveRotation(Quaternion.Slerp(transform.rotation, toRotation, Time.deltaTime * 10f));
-        }
-
-        ManageLightingAndSound();  
+        // 3. اعمال حرکت (استفاده از Vertical Input)
+        Vector3 movement = transform.forward * moveForward * currentSpeed * Time.fixedDeltaTime;
+        rb.MovePosition(rb.position + movement);
     }
 
     /// <summary>
     /// در این متد وضعیت‌های مختلف بتمن تغییر می‌کند.
-    /// - عادی (Normal): حالت پیش‌فرض
-    /// - مخفی‌کاری (Stealth): سرعت کاهش پیدا می‌کند و نور کم می‌شود
-    /// - هشدار (Alert): سرعت افزایش می‌یابد و نور تغییر می‌کند
     /// </summary>
     void HandleState()
     {
@@ -108,9 +118,6 @@ public class BatmanMovement : MonoBehaviour
 
     /// <summary>
     /// این متد مسئول تغییر نور و صدای آلارم در هر حالت است.
-    /// - در حالت **Alert**، نور چشمک‌زن می‌شود و آلارم پخش می‌شود.
-    /// - در حالت **Normal**، نور به رنگ سفید و شدت معمولی باز می‌گردد.
-    /// - در حالت **Stealth**، نور کم می‌شود و رنگ آن خاکی می‌شود.
     /// </summary>
     void ManageLightingAndSound()
     {
@@ -138,6 +145,11 @@ public class BatmanMovement : MonoBehaviour
                 alarmSound.Stop();
             }
 
+            // متوقف کردن کوروتین و تنظیم isFlashing
+            if (isFlashing)
+            {
+                StopCoroutine("FlashLight");
+            }
             isFlashing = false;
 
             if (environmentLight != null)
@@ -155,13 +167,12 @@ public class BatmanMovement : MonoBehaviour
                 environmentLight.color = stealthLightColor;
             }
 
-            currentSpeed = normalSpeed / 2;
+            // سرعت در FixedUpdate تنظیم می‌شود، این خط حذف شد تا تکرار نشود.
         }
     }
 
     /// <summary>
     /// این متد مسئول چشمک‌زن کردن نور در حالت Alert است.
-    /// نور بین رنگ‌های قرمز و آبی تغییر می‌کند.
     /// </summary>
     IEnumerator FlashLight()
     {
@@ -171,11 +182,13 @@ public class BatmanMovement : MonoBehaviour
         {
             if (environmentLight != null)
             {
+                // استفاده از isAlertFlashing که اکنون تعریف شده است.
                 environmentLight.color = isAlertFlashing ? alertLightColor1 : alertLightColor2;
                 isAlertFlashing = !isAlertFlashing;
             }
 
             yield return new WaitForSeconds(flashSpeed);
         }
+        isFlashing = false; // تنظیم مجدد پس از پایان حلقه
     }
 }

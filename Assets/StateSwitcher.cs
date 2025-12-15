@@ -8,8 +8,7 @@ public class StateSwitcher : MonoBehaviour
     private bool isInBatmobile = false;
 
     /// <summary>
-    /// این متد در ابتدای بازی اجرا می‌شود و مسئول فعال‌سازی بتمن و غیرفعال‌سازی بت‌موبیل است.
-    /// - بتمن فعال است و بت‌موبیل غیرفعال است.
+    /// این متد در ابتدای بازی اجرا می‌شود و مسئول تنظیم وضعیت اولیه است.
     /// </summary>
     void Start()
     {
@@ -18,35 +17,45 @@ public class StateSwitcher : MonoBehaviour
     }
 
     /// <summary>
-    /// این متد هر فریم اجرا می‌شود و مسئول بررسی فشردن کلید "Q" برای تغییر وضعیت بین بتمن و بت‌موبیل است.
-    /// - با فشردن "Q" وضعیت بین بتمن و بت‌موبیل تغییر می‌کند.
+    /// بررسی فشردن کلید "Q" برای تغییر وضعیت.
     /// </summary>
     void Update()
     {
         if (Input.GetKeyDown(KeyCode.Q))
         {
             isInBatmobile = !isInBatmobile;
-            SwitchState(); 
+            SwitchState();
         }
     }
 
     /// <summary>
     /// این متد برای سوییچ کردن بین حالت‌های بتمن و بت‌موبیل استفاده می‌شود.
-    /// - وقتی بتمن فعال است، بت‌موبیل غیر فعال می‌شود و بالعکس.
-    /// - موقعیت و چرخش مدل‌ها به مدل جدید منتقل می‌شود.
     /// </summary>
     void SwitchState()
     {
-        if (isInBatmobile)
+        if (isInBatmobile) 
         {
+            Rigidbody batmanRb = batman.GetComponent<Rigidbody>();
+            if (batmanRb != null)
+            {
+                batmanRb.velocity = Vector3.zero;
+                batmanRb.angularVelocity = Vector3.zero;
+            }
             batmobile.transform.position = batman.transform.position;
             batmobile.transform.rotation = batman.transform.rotation;
 
             batman.SetActive(false);
             batmobile.SetActive(true);
         }
-        else
+        else 
         {
+            Rigidbody batmobileRb = batmobile.GetComponent<Rigidbody>();
+            if (batmobileRb != null)
+            {
+                batmobileRb.velocity = Vector3.zero;
+                batmobileRb.angularVelocity = Vector3.zero;
+            }
+
             batman.transform.position = batmobile.transform.position;
             batman.transform.rotation = batmobile.transform.rotation;
 
