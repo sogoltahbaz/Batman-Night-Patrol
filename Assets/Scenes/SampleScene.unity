@@ -161,7 +161,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 2acc8bf27e0625d41b875576e6e20012, type: 3}
       propertyPath: m_LocalRotation.w
-      value: 1
+      value: 0.7071068
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 2acc8bf27e0625d41b875576e6e20012, type: 3}
       propertyPath: m_LocalRotation.x
@@ -169,11 +169,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 2acc8bf27e0625d41b875576e6e20012, type: 3}
       propertyPath: m_LocalRotation.y
-      value: -0
+      value: 0.7071068
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 2acc8bf27e0625d41b875576e6e20012, type: 3}
       propertyPath: m_LocalRotation.z
-      value: -0
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 2acc8bf27e0625d41b875576e6e20012, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
@@ -181,7 +181,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 2acc8bf27e0625d41b875576e6e20012, type: 3}
       propertyPath: m_LocalEulerAnglesHint.y
-      value: 0
+      value: 90
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 2acc8bf27e0625d41b875576e6e20012, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
@@ -245,6 +245,7 @@ MonoBehaviour:
   currentState: 0
   normalSpeed: 5
   boostSpeed: 10
+  rotationSpeed: 200
   environmentLight: {fileID: 705507994}
   alarmSound: {fileID: 963194229}
   flashSpeed: 1
@@ -889,8 +890,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 71e95a1a36e32db41b5e59f36694ffb9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  currentState: 0
   normalSpeed: 15
-  boostSpeed: 25
+  stealthSpeed: 5
+  alertSpeed: 50
   turnSpeed: 60
   environmentLight: {fileID: 705507994}
   alarmSound: {fileID: 963194229}
